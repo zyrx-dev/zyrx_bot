@@ -1,11 +1,14 @@
 import os
 from dotenv import load_dotenv
 from typing import Final
+
 from telegram import Update
 from telegram.ext import (
     Application, CommandHandler, MessageHandler,
     filters, ContextTypes,
 )
+
+from basic.helper_functions import log_user, calculate_factorial
 
 
 # Required Bot Info
@@ -18,6 +21,14 @@ BOT_USERNAME: Final = os.getenv('BOT_USERNAME')
 # Available Commands
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user: dict = {
+        update.message.chat.username: {
+            'id': update.message.chat.id,
+            'first_name': update.message.chat.first_name,
+            'last_name': update.message.chat.last_name,
+        }
+    }
+    log_user(user)
     await update.message.reply_text("Welcome to my world of buffering!!!\nType or click /help to check out available commands")
 
 
@@ -41,12 +52,6 @@ async def about_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def about_creator(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("This project was developed and currently maintained by Zyrx, contact email: zyrx99x@gmail.com")
 
-
-def calculate_factorial(number: int) -> int:
-    if number == 1:
-        return 1
-    else:
-        return number * calculate_factorial(number-1)
 
 async def factorial(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(context.args) == 0:
@@ -113,7 +118,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if response == "I'm not trained for this":
         try:
-            image = open('assets/Im-not-trained-for-this.jpg', 'rb')
+            image: bin = open('assets/Im-not-trained-for-this.jpg', 'rb')
             await update.message.reply_photo(photo=image)
             return
         except FileNotFoundError:
