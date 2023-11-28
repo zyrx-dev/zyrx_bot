@@ -110,7 +110,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         response: str = handle_response(text)
 
     # print(f"Bot's Response: {response}")
-
+    
+    if response == "I'm not trained for this":
+        try:
+            image = open('assets/Im-not-trained-for-this.jpg', 'rb')
+            await update.message.reply_photo(photo=image)
+            return
+        except FileNotFoundError:
+            pass
+            
     await update.message.reply_text(response)
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
